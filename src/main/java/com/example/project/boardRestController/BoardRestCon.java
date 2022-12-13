@@ -36,8 +36,12 @@ public class BoardRestCon {
     @GetMapping("/{num}")
     public ResponseEntity<?> showOne(@PathVariable int num){
         log.info("GetMapping showOne Request");
-        BoardEntity boardEntity = boardService.showOneServ(num);
-        if (boardEntity == null) ResponseEntity.badRequest().build();
+        try {
+            BoardEntity boardEntity = boardService.showOneServ(num);
+            if (boardEntity == null) ResponseEntity.badRequest().build();
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
         return ResponseEntity.ok().body(boardService.showOneServ(num));
     }
 
@@ -51,7 +55,13 @@ public class BoardRestCon {
     @DeleteMapping("/{num}")
     public ResponseEntity<?> deleteBoard(@PathVariable  int num){
         log.info("DELETEMapping deleteBoard Request");
-        BoardDto boardDto = boardService.deleteBoardServ(num);
-        return ResponseEntity.ok().body(boardDto);
+        try {
+            BoardDto boardDto = boardService.deleteBoardServ(num);
+            if (boardDto == null) ResponseEntity.badRequest().build();
+            return ResponseEntity.ok().body(boardDto);
+        }catch(RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }
